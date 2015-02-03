@@ -17,7 +17,7 @@ close(channel)
 ## filter and clean the sql dataframe
 
 mammalsubset <- totmammal %>%                                  # fetch data from SQL database
-  filter(year(Date)==2013)  %>%                                # set year filter
+  filter(year(Date)==2014)  %>%                                # set year filter
   select(-Owner, -Unit, -Habitat, -Sex:-Year)                  # remove unnecessary columns
 
 mammalyear <- mammalsubset %>%          
