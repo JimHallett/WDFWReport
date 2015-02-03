@@ -1,9 +1,18 @@
+---
+title: "WDFW SCP Annual Report 2014"
+author: "Jim Hallett"
+date: "Monday, February 02, 2015"
+output: word_document
+---
+
+```{r, results='asis', echo=FALSE}
 #####################################################################################################
 ## WDFW reporting script for scientific collection permit
 #####################################################################################################
 
 ## required libraries
 library(tidyr)
+library(plyr)
 library(dplyr)
 library("RODBC")
 library("lubridate")
@@ -31,8 +40,8 @@ names(mammalyear)<-(c("Station", "Northing", "Easting", "ScientificName", "Commo
 ## get the date range
 
 daterange <- data.frame(
-  aggregate(Date~Station, data=mammalsubset, min),
-  aggregate(Date~Station, data=mammalsubset, max))
+   aggregate(Date~Station, data=mammalsubset, min),
+   aggregate(Date~Station, data=mammalsubset, max))
 daterange <- daterange %>%
   select(-Station.1)
 colnames(daterange) <- c("Station", "Start", "End")
@@ -53,15 +62,8 @@ finalout <- finalout[c("Start", "End", "ScientificName", "CommonName", "NumberCa
                        "Northing", "Easting", "County", "Disposition")]
 
 
+knitr::kable(finalout)
 
 
-
-
-
-
-
-
-
-
-
+```
 
