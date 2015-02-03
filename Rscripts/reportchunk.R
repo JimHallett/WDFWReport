@@ -8,6 +8,7 @@ library(tidyr)
 library(dplyr)
 library("RODBC")
 library("lubridate")
+library( ReporteRs )
 
 ## pulldata from SQL view
 
@@ -54,7 +55,14 @@ finalout["Disposition"] <- "3"
 finalout <- finalout[c("Start", "End", "ScientificName", "CommonName", "NumberCaptured", 
                        "Northing", "Easting", "County", "Disposition")]
 
-finalout
+# Send to a Word document
+
+reportout = docx()
+reportout = addSection( reportout, landscape = TRUE)
+reportout = addFlexTable(reportout, FlexTable(finalout))
+reportout = addSection( reportout )
+writeDoc( reportout, file = "SCP2014.docx")
+
 
 
 
