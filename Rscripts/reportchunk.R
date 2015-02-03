@@ -3,6 +3,7 @@
 #####################################################################################################
 
 ## required libraries
+library(plyr)
 library(tidyr)
 library(dplyr)
 library("RODBC")
