@@ -22,49 +22,49 @@ amphibyear <- totamphib %>%   # fetch data from SQL database
   filter(Taxon == "Amphibian") %>%
   filter(year(Date)==2014)  %>%                              # set year filter
   filter(Station == "PR-P2" | Station == "BM-P2" | Station == "BM-P1") %>%
-  select(Date, Station, Northing, Easting, Scientific.Name, Common.Name, Count) # remove unnecessary columns
+  select(Date, Station, Northing, Easting, Scientific.Name, Count) # remove unnecessary columns
 
 amphibyear$Count[is.na(amphibyear$Count)] <- 1               # replace missing values oc Count with 1
+
+amphibyear$Day <- day(amphibyear$Date)                       # parse day, month, year
+amphibyear$Month <- month(amphibyear$Date)
+amphibyear$Year <- year(amphibyear$Date)
              
-amphibsubset <- amphibyear  %>% 
-  group_by(Date, Station, Northing, Easting, Scientific.Name, Common.Name) %>%
-  summarise(Captures=sum(Count))
+amphibsubset1 <- amphibyear  %>% 
+  group_by(Station, Northing, Easting, Year, Month, Day, Scientific.Name) %>%
+  summarise(Captures=sum(Count)) 
+  
+amphibsubset <- select(amphibsubset1, Northing, Easting, Year, Month, Day, Scientific.Name, Captures)
+
+amphibsubset$Observer <- "Permittees"
+amphibsubset$Type <- "Examined in hand or at close range"
+amphibsubset$Confidence <- "Yes"
+amphibsubset$Sex <- "Unknown"
+amphibsubset$Age <- "Larva"
+amphibsubset$CountAcc <- "100%"
+amphibsubset$Location <-"Juvenile foraging area"
+amphibsubset$Comments <- ""
+amphibsubset$Coord <- "UTM11"
+amphibsubset$Datum <- "NAD27"
+amphibsubset$CoordUnit <- "Meters"
+amphibsubset$Landmark <- ""
+amphibsubset$Owner <- "Tribal"
 
 ## rename the columns
 
-names(amphibsubset)<-(c("Station", "Northing", "Easting", "ScientificName", "CommonName", "NumberCaptured"))
+amphibsubset <- amphibsubset[c("Station", "Observer", "Day", "Month", "Year", "Scientific.Name", "Type", "Confidence", "Sex", "Age",
+  "Captures", "CountAcc", "Location", "Comments", "Coord", "Datum", "CoordUnit", "Easting", "Northing", "Landmark", "Owner")]
 
-## get the date range
+write.csv(amphibsubset, file = "IdahoAmphibians.csv")
 
-daterange <- data.frame(
-  aggregate(Date~Station, data=amphibyear, min),
-  aggregate(Date~Station, data=amphibyear, max))
-daterange <- daterange %>%
-  select(-Station.1)
-colnames(daterange) <- c("Station", "Start", "End")
 
-## merge capture data and locations with date range
-
-finalout <- merge(amphibsubset,daterange,by="Station") %>%
-  select(-Station)  
-
-# Add county and disposition
-
-finalout["County"] <- "Pend Oreille"
-finalout["Disposition"] <- "3"
-
-# Final output
-
-finalout <- finalout[c("Start", "End", "ScientificName", "CommonName", "NumberCaptured", 
-                       "Northing", "Easting", "County", "Disposition")]
-
-# Send to a Word document
-
-reportout = docx()
-reportout = addSection( reportout, landscape = TRUE)
-reportout = addFlexTable(reportout, FlexTable(finalout))
-reportout = addSection( reportout )
-writeDoc( reportout, file = "test.docx")
+# # Send to a Word document
+# 
+# reportout = docx()
+# reportout = addSection( reportout, landscape = TRUE)
+# reportout = addFlexTable(reportout, FlexTable(finalout))
+# reportout = addSection( reportout )
+# writeDoc( reportout, file = "test.docx")
 
 
 

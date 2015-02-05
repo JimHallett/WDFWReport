@@ -27,7 +27,7 @@ amphibyear <- totamphib %>%   # fetch data from SQL database
   select(Date, Station, Northing, Easting, Scientific.Name, Common.Name, Count) # remove unnecessary columns
 
 amphibyear$Count[is.na(amphibyear$Count)] <- 1               # replace missing values oc Count with 1
-             
+
 amphibsubset <- amphibyear  %>% 
   group_by(Station, Northing, Easting, Scientific.Name, Common.Name) %>%
   summarise(Captures=sum(Count))
