@@ -27,7 +27,7 @@ amphibyear <- totamphib %>%   # fetch data from SQL database
 amphibyear$Count[is.na(amphibyear$Count)] <- 1               # replace missing values oc Count with 1
              
 amphibsubset <- amphibyear  %>% 
-  group_by(Station, Northing, Easting, Scientific.Name, Common.Name) %>%
+  group_by(Date, Station, Northing, Easting, Scientific.Name, Common.Name) %>%
   summarise(Captures=sum(Count))
 
 ## rename the columns
@@ -64,7 +64,7 @@ reportout = docx()
 reportout = addSection( reportout, landscape = TRUE)
 reportout = addFlexTable(reportout, FlexTable(finalout))
 reportout = addSection( reportout )
-writeDoc( reportout, file = "SCPamphib2014Idaho.docx")
+writeDoc( reportout, file = "test.docx")
 
 
 
